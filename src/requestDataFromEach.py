@@ -27,29 +27,33 @@ def requestDataFromEach(countries):
         input("Please Ensure that a VPN is connected the current country is "+country+". Press Enter to continue...\n")
         # iterate through websites
         for i in range(len(df['website'])):
-            # set variables
-            website = df.loc[i,'website'];
-            # amend the url to include https://www.
-            if website[:4] == "www.":
-                url = f'https://' + website;
-            else:
-                url = f'https://www.' + website;
-            print(url);
-            try:
-                # navigate to the URL using Selenium Webdriver
-                driver.get(url);
-                # wait for the page to load
-                time.sleep(10);
-                # save the screenshot
-                driver.save_screenshot("data/"+country+"/"+website+".png");
-                # grab the HTML and data from the page
-                imgCount, letterCount, domainLoc = grabHTML(driver, country, website);
-                df.loc[i, 'screenShotTaken'] = True;
-                df.loc[i, 'imgCount'] = imgCount;
-                df.loc[i, 'letterCount'] = letterCount;
-                df.loc[i, 'domainLoc'] = domainLoc;
-                df.to_csv("data/"+country+"/popular_websites.csv", index=False)
-            except WebDriverException:
-                print("WebDriverException");
-                continue;
+            if df.loc[i, 'screenShotTaken'] != "True":
+                if df.loc[i, 'screenShotTaken'] != "Broken":
+                    # set variables
+                    website = df.loc[i,'website'];
+                    # amend the url to include https://www.
+                    if website[:4] == "www.":
+                        url = f'https://' + website;
+                    else:
+                        url = f'https://www.' + website;
+                    print(url);
+                    try:
+                        # navigate to the URL using Selenium Webdriver
+                        driver.get(url);
+                        # wait for the page to load
+                        time.sleep(10);
+                        # save the screenshot
+                        driver.save_screenshot("data/"+country+"/"+website+".png");
+                        # grab the HTML and data from the page
+                        imgCount, letterCount, domainLoc = grabHTML(driver, country, website);
+                        df.loc[i, 'screenShotTaken'] = True;
+                        df.loc[i, 'imgCount'] = imgCount;
+                        df.loc[i, 'letterCount'] = letterCount;
+                        df.loc[i, 'domainLoc'] = domainLoc;
+                        df.to_csv("data/"+country+"/popular_websites.csv", index=False)
+                    except WebDriverException:
+                        print("WebDriverException");
+                        df.loc[i, 'screenShotTaken'] = "Broken";
+                        df.to_csv("data/"+country+"/popular_websites.csv", index=False)
+                        continue;
         driver.quit();
