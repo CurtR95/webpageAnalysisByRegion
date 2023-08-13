@@ -3,3 +3,7 @@
 *.pyc
 *.pyo
 chromedriver.exe
+features.npy
+image_paths.pkl
+images.npy
+labels.pkl

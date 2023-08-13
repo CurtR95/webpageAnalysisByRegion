@@ -9,9 +9,6 @@ def xpath_soup(element):
     components = []
     child = element if element.name else element.parent
     for parent in child.parents:
-        """
-        @type parent: bs4.element.Tag
-        """
         previous = itertools.islice(parent.children, 0, parent.contents.index(child))
         xpath_tag = child.name
         xpath_index = sum(1 for i in previous if i.name == xpath_tag) + 1
